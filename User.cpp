@@ -3,16 +3,12 @@
 /*      登陆     */
 void User::Login()
 {
-	this->Input();
-	this->usrInfo.code = this->CL_CMD_LOGIN;
-	usrInfo.Transfrom(usrInfo,&buf);					// 转为发送数据
-	this->sock.send(buf, sizeof(buf));
-	this->sock.recv(AckBuf, sizeof(AckBuf));
-	std::cout << AckBuf << std::endl;
+	this->Register(this->CL_CMD_LOGIN);
+	//std::cout << AckBuf << std::endl;
 	// 判断是否已经注册
 	if (!Is_Resigter(AckBuf))
 	{
-		this->Register();
+		this->Register(this->CL_CMD_REG);
 		if (Is_Resigter(AckBuf))
 		{
 			std::cout << "注册成功" << std::endl;
@@ -26,12 +22,13 @@ void User::Login()
 	return;
 }
 /*      注册     */
-void User::Register()
+void User::Register(char code)
 {
 	this->Input();
-	this->usrInfo.code = this->CL_CMD_REG;
-	usrInfo.Transfrom(usrInfo, &buf);
-	this->sock.send(buf, sizeof(buf));
+	this->usrInfo.code = code;
+	int size = usrInfo.Transfrom(usrInfo, buf);					// 转为发送数据
+	this->sock.send(buf, size);
+	this->sock.recv(AckBuf, sizeof(AckBuf));
 }
 
 void User::Chat()
@@ -41,6 +38,7 @@ void User::Chat()
 	while (true)
 	{
 		std::cout << this->usrInfo.name << ">> ";
+		system("pause");
 		//std::cin >> this->usrInfo;
 		//this->sock.send((char*)message, sizeof(message));
 	}
@@ -67,20 +65,22 @@ void User::Input()
 
 bool User::Is_Resigter(char* rep)
 {
-	if (rep[0] == this->CL_CMD_REG && rep[1])
+	// 成功注册、或者成功登陆
+	if ((rep[0] == this->CL_CMD_LOGIN && rep[1]=='1') || (rep[0] == this->CL_CMD_REG && rep[1]=='1'))
 	{
 		return true;
 	}
 	return false;
 }
 
-void UsrInfor::Transfrom(UsrInfor& user, char** buf)
+int UsrInfor::Transfrom(UsrInfor& user, char*& buf)
 {
 	int size = user.code.size() + user.name.size() + user.msg.size() + user.sec.size();
-	if (*buf != nullptr)
-		delete *buf;
-	*buf = new char(size + 4);
+	if (buf != nullptr)
+		delete[] buf;
+	buf = new char[size + 4];
 	std::string str = user.code + "," + user.name + "," + user.sec + "," + user.msg;
-	strncpy(*buf, str.c_str(), size);
-	(*buf)[size] = '\0';
+	strncpy(buf, str.c_str(), str.size());
+	buf[str.size()] = '\0';
+	return str.size()+1;
 }

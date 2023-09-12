@@ -25,8 +25,8 @@ void Socket::connect(Address_v4* addr)
 	}
 	char ip[20];
 	inet_ntop(AF_INET, &(addr->addr.sin_addr), ip, sizeof(ip));
-	std::cout << "connect [ " << ip << ":" << ntohs(addr->addr.sin_port) << " ] "
-		<< "sucessfully!" << std::endl;
+	std::cout << "connect [ " << ip << ":" << std::to_string(ntohs(addr->addr.sin_port)) << "]" << "sucessfully!" << std::endl;
+
 }
 
 void Socket::send(char* msg,int msg_len)
@@ -51,7 +51,7 @@ void Socket::recv(char* msg, int msg_len)
 	int ret = ::recv(fd, msg, sizeof(msg_len), 0);
 	if (ret < 0)
 	{
-		std::cout << "recv failed." << std::endl;
+		std::cout << "recv failed." << WSAGetLastError() << std::endl;
 		exit(1);
 	}
 	else if (ret == 0)
@@ -59,10 +59,10 @@ void Socket::recv(char* msg, int msg_len)
 		std::cout << "connect already close." << WSAGetLastError() << std::endl;
 		exit(0);
 	}
-	else
-	{
-		std::cout << ">> " << msg << std::endl;
-	}
+	//else
+	//{
+	//	std::cout << ">> " << msg << std::endl;
+	//}
 
 }
 

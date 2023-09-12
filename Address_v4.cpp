@@ -24,7 +24,9 @@ void Address_v4::GetAddr(char* ip, int& port)
 	std::cout << "请输入IP:";
 	std::cin >> ip;
 	std::cout << "请输入端口号:";
-	std::cin >> port;
+	std::string str;
+	std::cin >> str;
+	port = std::stoi(str);
 }
 /*     设置ip地址和端口号      */
 void Address_v4::SetAddr()

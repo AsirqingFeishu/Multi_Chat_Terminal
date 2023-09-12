@@ -10,7 +10,12 @@ public:
 	UsrInfor() {};
 	~UsrInfor() {};
 	// 转换用户信息为数据进行发送
-	void Transfrom(class UsrInfor& user, char** buf);
+	/*
+		user: 用户信息
+		buf：数据缓存
+		返回值：数据大小
+	*/
+	int Transfrom(class UsrInfor& user, char*& buf);
 public:
 	std::string code;			// 指令码
 	std::string name;			// 用户名
@@ -28,7 +33,7 @@ public:
 	/*		用户登陆	*/
 	void Login();
 	/*		用户注册	*/
-	void Register();
+	void Register(char code);
 	/*		用户聊天	*/
 	void Chat();
 
