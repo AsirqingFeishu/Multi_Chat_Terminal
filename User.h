@@ -1,9 +1,16 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #include"Socket.h"
+#include "Console.h"
 #include <string>
-
-
+#include <thread>
+#include <mutex>
+#include<conio.h>
+/*		
+	注册/登陆数据： [r/l, 用户名，密码,]
+	聊天数据：		[c,用户名, 聊天信息]
+*/
+#define Separator ','
 class UsrInfor
 {
 public:
@@ -15,7 +22,11 @@ public:
 		buf：数据缓存
 		返回值：数据大小
 	*/
-	int Transfrom(class UsrInfor& user, char*& buf);
+	int Transfrom_to_Date(UsrInfor& user, char*& buf, char usrCode);
+	/*
+		转用户信息为数据
+	*/
+	int inTransfrom_to_UsrInfor(UsrInfor*& user, char*& buf);
 public:
 	std::string code;			// 指令码
 	std::string name;			// 用户名
@@ -25,7 +36,7 @@ public:
 class User
 {
 	friend class UsrInfo;
-	friend class Manager;
+
 public:
 
 	User(Socket& sock);
@@ -35,13 +46,16 @@ public:
 	/*		用户注册	*/
 	void Register(char code);
 	/*		用户聊天	*/
-	void Chat();
-
+	void Chat(Console& console);
+	/*      输入登陆信息   */
 	void Input();
+	/*     显示聊天信息   */
+	void ShowChat(Console& console);
 public:
-	UsrInfor usrInfo;
-	char AckBuf[4];			// Ack接收缓存
-	char* buf;				// 发送、接收缓存
+	UsrInfor usrInfo;						// 用户信息
+	UsrInfor* usrInfo_Recv=nullptr;			// 收到的用户消息
+	char AckBuf[10];					// Ack接收缓存
+	char* buf;							// 接收缓存
 private:
 	bool Is_Resigter(char* rep);
 private:
@@ -50,6 +64,9 @@ private:
 	char CL_CMD_REG;
 	char CL_CMD_CHAT;
 	char CL_CMD_LOGIN;
+
+	// 锁变量
+	std::mutex mtx;
 };
 
 

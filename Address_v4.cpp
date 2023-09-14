@@ -1,8 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Address_v4.h"
 
 Address_v4::Address_v4()
 {
-	ip = new char(30);
+	ip = new char[20];
 	addr_len = sizeof(struct sockaddr_in);
 	memset(&addr, 0, addr_len);
 }
@@ -32,8 +33,10 @@ void Address_v4::GetAddr(char* ip, int& port)
 void Address_v4::SetAddr()
 {
 
-	int port = 0;
-	this->GetAddr(ip,port);
+	//int port = 0;
+	//this->GetAddr(ip,port);
+	int port = 8000;
+	strcpy(ip, "192.168.88.100");
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
 	inet_pton(AF_INET, ip, &addr.sin_addr);

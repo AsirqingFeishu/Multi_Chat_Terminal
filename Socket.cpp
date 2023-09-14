@@ -29,7 +29,7 @@ void Socket::connect(Address_v4* addr)
 
 }
 
-void Socket::send(char* msg,int msg_len)
+int Socket::send(char* msg,int msg_len)
 {
 	int size =::send(this->fd, msg, msg_len,0);
 	if (size < 0)
@@ -42,11 +42,11 @@ void Socket::send(char* msg,int msg_len)
 		std::cout << "connect already close." << WSAGetLastError() << std::endl;
 		exit(0);
 	}
-	else
-		std::cout << "send successfully." << std::endl;
+
+	return size;
 }
 
-void Socket::recv(char* msg, int msg_len)
+int Socket::recv(char* msg, int msg_len)
 {
 	int ret = ::recv(fd, msg, sizeof(msg_len), 0);
 	if (ret < 0)
@@ -59,11 +59,7 @@ void Socket::recv(char* msg, int msg_len)
 		std::cout << "connect already close." << WSAGetLastError() << std::endl;
 		exit(0);
 	}
-	//else
-	//{
-	//	std::cout << ">> " << msg << std::endl;
-	//}
-
+	return ret;
 }
 
 void Socket::init()

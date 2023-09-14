@@ -14,9 +14,9 @@ public:
 
 	void connect(Address_v4* addr);
 
-	void send(char* msg, int msg_len);
+	int send(char* msg, int msg_len);
 
-	void recv(char* msg, int msg_len);
+	int recv(char* msg, int msg_len);
 
 	Socket();
 	~Socket();
